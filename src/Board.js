@@ -130,7 +130,7 @@
         var col = index + majorDiagonalColumnIndexAtFirstRow;
         return sum + (col < 0 || col > rows.length - 1 ? 0 : row[col]);
       }, 0);
-      return result > 1; // fixme
+      return result > 1;
     },
 
     // test if any major diagonals on this board contain conflicts
@@ -140,7 +140,7 @@
       for (var i = -n + 1; i < n; i++){
         conflict = conflict || this.hasMajorDiagonalConflictAt(i);
       }
-      return conflict; // fixme
+      return conflict;
     },
 
 
@@ -150,12 +150,22 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      var rows = this.rows();
+      var result = _.reduce(rows, function(sum, row, index) {
+        var value = row[minorDiagonalColumnIndexAtFirstRow - index];
+        value = value || 0;
+        return sum + value;
+      }, 0);
+      return result > 1;
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
+      var conflict = false;
+      for (var i = 0; i < 2*this.rows().length - 2; i++) {
+        conflict = conflict || this.hasMinorDiagonalConflictAt(i);
+      }
+      return conflict;
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
