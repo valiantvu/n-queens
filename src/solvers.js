@@ -95,8 +95,73 @@ window.countNRooksSolutions = function(n) {
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
-  var solution = undefined; //fixme
+  var solution = 0;
+  var options = [];
+  // create an array of possibilities for the current row
+  for (var i = 0; i < n; i++){
+    var option = _.range(n).map(function(val, index){
+      if (index === i){
+        val = 1;
+      } else {
+        val = 0;
+      }
+      return val;
+    });
+    options.push(option);
+  }
 
+  // recursive function
+  var queenSolutions = function(count){
+
+    if (n === 0) {
+      return [1];
+    }
+    if (count === 1){
+      return options.map(function(x) { return [x];});
+    }
+    if (n === 2 || n === 3) {
+      return _.range(n).map(function() { return []; });
+    }
+
+    // decrement count
+    count--;
+    // if count is greater than 0
+    if (count > 0){
+      // call recursive function passing in count
+      // store results
+      var results = queenSolutions(count);
+      var allBoardArrs = [];
+      // loop through possibilities
+      for (var i = 0; i < options.length; i++){
+        // loop through results
+        for (var b = 0; b < results.length; b++){
+          var nextBoard = false;
+          for (var r = 0; r < results[b].length; r++){
+            var major = results[b][r][i + r + 1] || 0;
+            var minor = results[b][r][i - r - 1] || 0;
+            if (results[b][r][i] || major || minor){
+              nextBoard = true;
+              break;
+            }
+          }
+          if (nextBoard) {
+            continue;
+          }
+          // create a new array with the current possibility and the current result
+          var boardArr = [];
+          boardArr.push(options[i]);
+          boardArr = boardArr.concat(results[b]);
+          allBoardArrs.push(boardArr);
+          if (count === n - 1) {
+            return boardArr;
+          }
+        }
+      }
+      return allBoardArrs;
+    }
+  };
+
+  solution = queenSolutions(n);
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
   return solution;
 };
