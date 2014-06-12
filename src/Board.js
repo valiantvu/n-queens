@@ -80,6 +80,9 @@
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
       var currentRow = this.rows()[rowIndex];
+      if (currentRow.length === 0) {
+        return false;
+      }
       var result = _.reduce(currentRow, function(sum, num) {
         return sum + num;
       });
