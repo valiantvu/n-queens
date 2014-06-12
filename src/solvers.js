@@ -48,13 +48,6 @@ window.countNRooksSolutions = function(n) {
   // recursive function
   var rookSolutions = function(count){
 
-    if (n === 1){
-      var board = new Board(options);
-      if (!board.hasAnyRooksConflicts()){
-        solutionCount++;
-      }
-    }
-
     if (count === 1){
       return options.map(function(x) { return [x];});
     }
@@ -112,7 +105,66 @@ window.findNQueensSolution = function(n) {
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
   var solutionCount = undefined; //fixme
+  var options = [];
+  // create an array of possibilities for the current row
+  for (var i = 0; i < n; i++){
+    var option = _.range(n).map(function(val, index){
+      if (index === i){
+        val = 1;
+      } else {
+        val = 0;
+      }
+      return val;
+    });
+    options.push(option);
+  }
 
+  // recursive function
+  var queenSolutions = function(count){
+
+    if (n === 0) {
+      return [1];
+    }
+    if (count === 1){
+      return options.map(function(x) { return [x];});
+    }
+
+    // decrement count
+    count--;
+    // if count is greater than 0
+    if (count > 0){
+      // call recursive function passing in count
+      // store results
+      var results = queenSolutions(count);
+      var allBoardArrs = [];
+      // loop through possibilities
+      for (var i = 0; i < options.length; i++){
+        // loop through results
+        for (var b = 0; b < results.length; b++){
+          var nextBoard = false;
+          for (var r = 0; r < results[b].length; r++){
+            var major = results[b][r][i + r + 1] || 0;
+            var minor = results[b][r][i - r - 1] || 0;
+            if (results[b][r][i] || major || minor){
+              nextBoard = true;
+              break;
+            }
+          }
+          if (nextBoard) {
+            continue;
+          }
+          // create a new array with the current possibility and the current result
+          var boardArr = [];
+          boardArr.push(options[i]);
+          boardArr = boardArr.concat(results[b]);
+          allBoardArrs.push(boardArr);
+        }
+      }
+      return allBoardArrs;
+    }
+  };
+
+  solutionCount = queenSolutions(n).length;
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
 };
