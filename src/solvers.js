@@ -209,6 +209,7 @@ window.countNQueensSolutions = function(n) {
           var nextBoard = false;
           for (var r = 0; r < results[b].length; r++){
             var major = results[b][r][i + r + 1] || 0;
+            // 2 ^ n - i - 1
             var minor = results[b][r][i - r - 1] || 0;
             if (results[b][r][i] || major || minor){
               nextBoard = true;
